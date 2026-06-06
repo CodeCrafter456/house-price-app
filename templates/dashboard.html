@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Dashboard – HouseIQ{% endblock %}
+{% block content %}
+<!-- Hero greeting -->
+<div class="mb-8">
+  <h1 class="text-4xl font-bold mb-1">
+    Hello, {{ session.full_name }} 
+  </h1>
+  <p class="text-gray-400">Here's a snapshot of your activity on HouseIQ.</p>
+</div>
+<!-- Stat cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+  <div class="bg-indigo-600/20 border border-indigo-500/30 rounded-2xl p-5">
+    <p class="text-xs text-indigo-300 font-semibold uppercase tracking-widest mb-1">Total Predictions</p>
+    <p class="text-4xl font-bold text-indigo-300">{{ total }}</p>
+  </div>
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-1">Username</p>
+    <p class="text-2xl font-bold text-white">{{ session.username }}</p>
+  </div>
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-5">
+    <p class="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-1">Email</p>
+    <p class="text-xl font-bold text-white truncate">{{ session.email }}</p>
+  </div>
+</div>
+<!-- Quick action -->
+<div class="mb-8">
+  <a href="/predict"
+     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700
+            text-white font-semibold px-6 py-3 rounded-xl transition shadow-lg">
+ Make a New Prediction
+  </a>
+</div>
+<!-- History table -->
+<div class="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-800">
+    <h2 class="text-lg font-semibold">Recent Prediction History</h2>
+  </div>
+  {% if history %}
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="text-xs text-gray-400 uppercase tracking-widest bg-gray-800/50">
+        <tr>
+          <th class="px-4 py-3 text-left">#</th>
+          <th class="px-4 py-3 text-left">Sqft</th>
+          <th class="px-4 py-3 text-left">Beds</th>
+          <th class="px-4 py-3 text-left">Baths</th>
+          <th class="px-4 py-3 text-left">Year</th>
+          <th class="px-4 py-3 text-left">ZIP</th>
+          <th class="px-4 py-3 text-left">Predicted Price</th>
+          <th class="px-4 py-3 text-left">Date</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-800">
+        {% for row in history %}
+<tr class="hover:bg-gray-800/40 transition">
+          <td class="px-4 py-3 text-gray-500">{{ loop.index }}</td>
+          <td class="px-4 py-3">{{ "{:,}".format(row.sqft) }}</td>
+          <td class="px-4 py-3">{{ row.bedrooms }}</td>
+          <td class="px-4 py-3">{{ row.bathrooms }}</td>
+          <td class="px-4 py-3">{{ row.year_built }}</td>
+          <td class="px-4 py-3">{{ "%05d"|format(row.zip_code) }}</td>
+          <td class="px-4 py-3 font-semibold text-green-400">
+            ${{ "{:,.0f}".format(row.predicted_price) }}
+          </td>
+          <td class="px-4 py-3 text-gray-400 text-xs">{{ row.created_at[:16] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="px-6 py-12 text-center text-gray-500">
+    No predictions yet.
+    <a href="/predict" class="text-indigo-400 hover:underline ml-1">Make your first one →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

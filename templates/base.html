@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-950">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}HouseIQ{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brand: { DEFAULT:'#6366f1', dark:'#4f46e5' } } } }
+    }
+  </script>
+</head>
+<body class="h-full text-gray-100 font-sans antialiased">
+<!-- NAV -->
+<nav class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="/" class="flex items-center gap-2 text-xl font-bold text-indigo-400">
+ HouseIQ
+      </a>
+      <div class="flex items-center gap-4 text-sm">
+        {% if session.user_id %}
+          <a href="/dashboard" class="hover:text-indigo-400 transition">Dashboard</a>
+          <a href="/predict"   class="hover:text-indigo-400 transition">Predict</a>
+          <a href="/profile"   class="hover:text-indigo-400 transition">Profile</a>
+          {% if session.username == 'admin' %}
+          <a href="/admin" class="hover:text-red-400 transition">Admin</a>
+          {% endif %}
+          <a href="/logout"
+             class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition">
+            Logout
+          </a>
+        {% else %}
+          <a href="/login"    class="hover:text-indigo-400 transition">Login</a>
+          <a href="/register"
+             class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg transition">
+            Register
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+<!-- FLASH MESSAGES -->
+<div class="max-w-7xl mx-auto px-4 pt-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      {% set colour = {'success':'green','danger':'red','warning':'yellow','info':'blue'}[cat] | default('gray') %}
+      <div class="mb-3 px-4 py-3 rounded-lg bg-{{colour}}-800/40 border border-{{colour}}-600 text-{{colour}}-200 text-sm">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  {% endwith %}
+</div>
+<!-- PAGE CONTENT -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+{% block content %}{% endblock %}
+</main>
+<footer class="mt-16 py-6 text-center text-xs text-gray-600">
+  HouseIQ © 2025 · Built with Flask + Scikit-Learn + Tailwind CSS
+</footer>
+</body>
+</html>

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Predict – HouseIQ{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-2">House Price Predictor</h1>
+  <p class="text-gray-400 mb-8">Fill in the details below to get an AI-powered price estimate.</p>
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+    <form method="POST" class="space-y-6">
+      <!-- Sqft & Year -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-1">
+            Square Footage (sqft)
+          </label>
+          <input name="sqft" type="number" min="100" max="20000" required
+                 value="{{ form_data.get('sqft','') }}"
+                 class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                        text-gray-100 focus:outline-none focus:border-indigo-500
+                        focus:ring-1 focus:ring-indigo-500"
+                 placeholder="e.g. 1800"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-1">Year Built</label>
+          <input name="year_built" type="number" min="1900" max="2024" required
+                 value="{{ form_data.get('year_built','') }}"
+                 class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                        text-gray-100 focus:outline-none focus:border-indigo-500
+                        focus:ring-1 focus:ring-indigo-500"
+                 placeholder="e.g. 2005"/>
+        </div>
+      </div>
+      <!-- Beds & Baths -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-1">Bedrooms</label>
+          <select name="bedrooms"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                         text-gray-100 focus:outline-none focus:border-indigo-500">
+            {% for n in range(1,8) %}
+            <option value="{{ n }}"
+              {% if form_data.get('bedrooms')==n %}selected{% endif %}>
+              {{ n }} Bedroom{{ 's' if n>1 }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-1">Bathrooms</label>
+          <select name="bathrooms"
+                  class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                         text-gray-100 focus:outline-none focus:border-indigo-500">
+            {% for n in range(1,6) %}
+            <option value="{{ n }}"
+              {% if form_data.get('bathrooms')==n %}selected{% endif %}>
+              {{ n }} Bathroom{{ 's' if n>1 }}
+            </option>
+{% endfor %}
+          </select>
+        </div>
+      </div>
+      <!-- ZIP -->
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">Location (ZIP Code)</label>
+        <select name="zip_code"
+                class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                       text-gray-100 focus:outline-none focus:border-indigo-500">
+          {% for val, label in zip_choices %}
+          <option value="{{ val }}"
+            {% if form_data.get('zip_code')==val %}selected{% endif %}>
+            {{ label }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold
+                     py-3 rounded-xl text-lg transition shadow-lg">
+ Predict Price
+      </button>
+    </form>
+  </div>
+  <!-- Prediction result -->
+  {% if prediction is not none %}
+  <div class="mt-8 bg-gradient-to-r from-green-900/40 to-emerald-900/40
+              border border-green-600/40 rounded-2xl p-8 text-center shadow-xl">
+    <p class="text-sm text-green-300 font-semibold uppercase tracking-widest mb-2">
+      Estimated Market Value
+    </p>
+    <p class="text-6xl font-black text-green-400 mb-3">
+      ${{ "{:,.0f}".format(prediction) }}
+    </p>
+    <p class="text-gray-400 text-sm">
+      Based on {{ "{:,}".format(form_data.sqft) }} sqft ·
+      {{ form_data.bedrooms }} bed · {{ form_data.bathrooms }} bath ·
+      Built {{ form_data.year_built }} · ZIP {{ "%05d"|format(form_data.zip_code) }}
+    </p>
+    <p class="text-xs text-gray-500 mt-3">
+ This is an AI estimate for informational purposes only.
+    </p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

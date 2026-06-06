@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Profile – HouseIQ{% endblock %}
+{% block content %}
+<div class="max-w-lg mx-auto">
+  <h1 class="text-3xl font-bold mb-8">My Profile</h1>
+  <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+    <form method="POST" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+        <input name="full_name" type="text" value="{{ user.full_name or '' }}"
+               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                      text-gray-100 focus:outline-none focus:border-indigo-500"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+        <input name="email" type="email" required value="{{ user.email }}"
+               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                      text-gray-100 focus:outline-none focus:border-indigo-500"/>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-300 mb-1">
+          New Password <span class="text-gray-500">(leave blank to keep current)</span>
+        </label>
+        <input name="new_password" type="password" minlength="6"
+               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2.5
+                      text-gray-100 focus:outline-none focus:border-indigo-500"
+               placeholder="Min. 6 characters"/>
+      </div>
+      <div class="flex items-center gap-3 pt-2">
+        <button type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold
+                       px-6 py-2.5 rounded-lg transition">
+          Save Changes
+        </button>
+        <a href="/dashboard" class="text-sm text-gray-400 hover:text-white transition">
+          Cancel
+        </a>
+      </div>
+    </form>
+    <div class="mt-6 pt-6 border-t border-gray-800 text-sm text-gray-500">
+      Member since {{ user.created_at[:10] }}
+    </div>
+  </div>
+</div>
+{% endblock %}
